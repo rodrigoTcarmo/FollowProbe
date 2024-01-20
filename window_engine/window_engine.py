@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import scrolledtext
 
 
 class InterfaceEngine:
@@ -18,21 +19,28 @@ class InterfaceEngine:
         # Button
         self.submit_button = tk.Button(master, text="Submit", command=self.window_starter)
 
+        # Text widget for logging
+        self.log_text = scrolledtext.ScrolledText(master, height=10, width=40, wrap=tk.WORD)
+
         # Layout
         self.label_target_accounts.grid(row=0, column=0, padx=10, pady=10, sticky="e")
         self.entry_target_accounts.grid(row=0, column=1, padx=10, pady=10, sticky="w")
         self.label_accounts_qtys.grid(row=1, column=0, padx=10, pady=10, sticky="e")
         self.entry_accounts_qty.grid(row=1, column=1, padx=10, pady=10, sticky="w")
         self.submit_button.grid(row=2, column=0, columnspan=2, pady=20)
-        
-        self.window = tk.Tk()
-        self.entry = tk.Entry()
+        self.log_text.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
     def window_starter(self):
         target_account = self.entry_target_accounts.get()
         qty_accounts_to_follow = int(self.entry_accounts_qty.get())
 
+        # Log the information
+        log_message = f"CONTA ALVO: {target_account}\nNUMERO DE SEGUIDORES DESEJADO: {qty_accounts_to_follow}\nINICIANDO AUTOMAÇÃO..."
+        self.log_text.insert(tk.END, log_message)
+
         # TODO: Implement the logic to start the process using the provided values
+        from screen_engine.screen_engine import WebpageEngine
+        WebpageEngine(target_account=target_account, followers_qty=qty_accounts_to_follow).start_webpage_engine()
         print(f"Target Account: {target_account}")
         print(f"Number of Accounts to Follow: {qty_accounts_to_follow}")
 

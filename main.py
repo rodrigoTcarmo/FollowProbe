@@ -1,5 +1,5 @@
-from screen_engine.screen_engine import open_webpage
-from window_engine.window_engine import WindowEngine
+import tkinter
+from window_engine.window_engine import InterfaceEngine
 
 
 def welcome_back():
@@ -7,7 +7,7 @@ def welcome_back():
 
 
 def init_window():
-    WindowEngine().window_starter()
+    InterfaceEngine(tkinter.Tk()).window_starter()
 
 
 if __name__ == "__main__":
