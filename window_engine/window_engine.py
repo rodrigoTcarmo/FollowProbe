@@ -1,5 +1,7 @@
+import time
 import tkinter as tk
 from tkinter import scrolledtext
+from screen_engine.screen_engine import WebpageEngine
 
 
 class InterfaceEngine:
@@ -30,20 +32,34 @@ class InterfaceEngine:
         self.submit_button.grid(row=2, column=0, columnspan=2, pady=20)
         self.log_text.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
+        self.webpage_engine = WebpageEngine(log_text=self.log_text, tk=tk, master=self.master)
+        self.log_text.insert(tk.END, "Iniciando follow probe bot...\n")
+        self.log_text.insert(tk.END, "Aguardando o login ser efetuado...\n\n")
+        self.webpage_engine.open_login_page(login_url="https://www.instagram.com")
+        self.login_counter()
+        self.log_text.insert(tk.END, "Insira nos campos acima a conta alvo e o número de seguidores desejado...\n")
+
+
+    def login_counter(self):
+        secs = 0
+        while secs <= 120:
+            self.master.update()
+            if self.webpage_engine.is_logged_in():
+                self.log_text.insert(tk.END, "Login realizado com sucesso!\n")
+                break
+            secs += 1
+            time.sleep(1)
+
     def window_starter(self):
         target_account = self.entry_target_accounts.get()
         qty_accounts_to_follow = int(self.entry_accounts_qty.get())
 
         # Log the information
-        log_message = f"CONTA ALVO: {target_account}\nNUMERO DE SEGUIDORES DESEJADO: {qty_accounts_to_follow}\nINICIANDO AUTOMAÇÃO..."
+        log_message = f"CONTA ALVO: {target_account}\nNUMERO DE SEGUIDORES DESEJADO: {qty_accounts_to_follow}\nINICIANDO AUTOMAÇÃO...\n\n"
         self.log_text.insert(tk.END, log_message)
 
         # TODO: Implement the logic to start the process using the provided values
-        from screen_engine.screen_engine import WebpageEngine
-        WebpageEngine(target_account=target_account, followers_qty=qty_accounts_to_follow).start_webpage_engine()
-        print(f"Target Account: {target_account}")
-        print(f"Number of Accounts to Follow: {qty_accounts_to_follow}")
-
+        self.webpage_engine.start_webpage_engine(target_account=target_account, followers_qty=qty_accounts_to_follow)
 
     def validate_int(self, new_value):
         try:
